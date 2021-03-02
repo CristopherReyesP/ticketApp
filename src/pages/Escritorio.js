@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Col, Divider, Row, Typography } from 'antd';
 import { CloseCircleOutlined, RightOutlined } from '@ant-design/icons';
+import { useHideMenu } from '../hooks/useHideMenu';
+import { getUsuarioStorage } from '../helper/getUsuarioStorage';
+import { Redirect, useHistory } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 
 export const Escritorio = () => {
 
+    useHideMenu(false);
+    const [usuario] = useState(getUsuarioStorage());
+    const history = useHistory();
+
     const salir = () => {
 
-        console.log('salir')
+        localStorage.clear();
+        history.replace('/ingresar');//replace para que no pueda regresar a la pantalla anterior
 
     }
     
@@ -18,13 +26,17 @@ console.log('Siguiente ticket')
 
     }
 
+    if ( !usuario.agente && !usuario.escritorio ) {
+        return <Redirect to="/ingresar" />
+    }
+
     return (
         <>
             <Row>
                 <Col span={20}>
-                    <Title level={2}>Fernando</Title>
+                    <Title level={2}>{usuario.agente}</Title>
                     <Text>Usted está trabajando en el escritorio: </Text>
-                    <Text type="success">  5</Text>
+                    <Text type="success"> {usuario.escritorio}</Text>
                 </Col>
                 <Col span={4}>
                     <Button
